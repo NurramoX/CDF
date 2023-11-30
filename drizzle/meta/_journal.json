@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1701346676754,
+      "tag": "0000_colossal_silhouette",
+      "breakpoints": true
+    }
+  ]
+}
