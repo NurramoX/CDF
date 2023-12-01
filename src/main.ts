@@ -1,5 +1,3 @@
-#!/usr/bin/env vite-node --script
-
 import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -78,6 +76,11 @@ yargs(hideBin(process.argv))
       handleQuery(db, argv.subabbr!);
     },
   )
+  .command('list', 'List all abbrevations', {}, () => {
+    const db = connectToDatabase();
+    logger(`Listing items...`);
+    listItems(db);
+  })
   .strictCommands()
   .help().argv;
 
@@ -90,11 +93,9 @@ function handleRegister(
     .values({ key, path })
     .then(() => {
       logger('success');
-      process.exit(0);
     })
     .catch((x) => {
       console.error(x);
-      process.exit(1);
     });
 }
 
@@ -107,14 +108,10 @@ function handleDefault(db: BetterSQLite3Database<typeof schema>, key: string) {
       (x) => {
         if (x === undefined) {
           console.error(`There is no path that is registered under ${key}`);
-          process.exit(1);
-        }
-        console.log(x.path);
-        process.exit(0);
+        } else console.log(x.path);
       },
       (err) => {
         console.error(err);
-        process.exit(1);
       },
     );
 }
@@ -135,8 +132,17 @@ function handleQuery(
     })
     .catch((err) => {
       console.error(err);
-      process.exit(1);
     });
+}
+
+function listItems(db: BetterSQLite3Database<typeof schema>) {
+  const result = db
+    .select({
+      abbr: fast_forwards.key,
+    })
+    .from(fast_forwards)
+    .all();
+  console.log(result.map((x) => x.abbr).join('\n'));
 }
 
 function connectToDatabase() {
