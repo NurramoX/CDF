@@ -1,7 +1,7 @@
 cdf() {
     if [ "$1" = "register" ]; then
         if [ "$#" -lt 2 ]; then
-            echo "No keey was provided"
+            echo "No key was provided"
             return
         fi
         if [ "$#" -eq 2 ]; then
@@ -9,10 +9,10 @@ cdf() {
         else
             cdf_backend register $2 $3
         fi
-        echo "Locked and loaded. Path registered for key: $2"
         return
     else
-        local target_path=$(cdf_backend $1)
+        local target_path
+        target_path=$(cdf_backend get $1)
         if [ -n "$target_path" ]; then
             cd $target_path
         else
